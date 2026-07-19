@@ -1,27 +1,20 @@
-import { useParams, Link ,useNavigate} from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import BackendApi from "../AxiInt";
 import Analysebtn from "../Components/Analysebtn";
 import NavbarComp from "../Components/NavbarComp";
 
 export default function JobDetail() {
     const { id } = useParams();
-    const [job, setJob] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const navigate= useNavigate();
-    useEffect(() => {
-        setIsLoading(true);
-        BackendApi
-            .get(`listjob/${id}/`)
-            .then((res) => {
-                setJob(res.data);
-                setIsLoading(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                setIsLoading(false);
-            });
-    }, [id]);
+    const navigate = useNavigate();
+
+    const { data: job, isLoading } = useQuery({
+        queryKey: ["job", id],
+        queryFn: async () => {
+            const res = await BackendApi.get(`listjob/${id}/`);
+            return res.data;
+        }
+    });
 
     if (isLoading) {
         return (

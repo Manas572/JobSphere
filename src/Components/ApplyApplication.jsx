@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import BackendApi from '../AxiInt';
 import AppSuccess from './AppSuccess';
 import AppLoading from './AppLoading';
@@ -17,39 +18,33 @@ const optionalFields = [
 
 export default function ApplyForm() {
     const { id } = useParams();
-    const [job, setJob] = useState(null);
-    const [status, setStatus] = useState('loading'); 
-    const [errorMsg, setErrorMsg] = useState('');
     const [formData, setFormData] = useState({
         email: '', resume_link: '', portfolio_url: '', linkedin_url: '', github_url: '', codolio_url: ''
     });
 
-    useEffect(() => {
-        BackendApi.get(`listjob/${id}/`)
-            .then(res => { setJob(res.data); setStatus('idle'); })
-            .catch(() => setStatus('error')); 
-    }, [id]);
+    const { data: job, isLoading, isError: isJobError } = useQuery({
+        queryKey: ['job', id],
+        queryFn: async () => (await BackendApi.get(`listjob/${id}/`)).data
+    });
+
+    const mutation = useMutation({
+        mutationFn: async (data) => await BackendApi.post(`apply/${id}/`, data)
+    });
 
     const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        setStatus('submitting');
-        setErrorMsg('');
-        
-        try {
-            await BackendApi.post(`apply/${id}/`, formData);
-            setStatus('success');
-        } catch (error) {
-            console.error("Application failed", error);
-            setStatus('error');
-            setErrorMsg(error.response?.data?.message || error.response?.data?.error || "Failed to submit application.");
-        }
+        mutation.mutate(formData);
     };
 
-    if (status === 'loading') return <AppLoading />;
-    if (!job) return <JobNF />;
-    if (status === 'success') return <AppSuccess job={job} />;
+    if (isLoading) return <AppLoading />;
+    if (isJobError || !job) return <JobNF />;
+    if (mutation.isSuccess) return <AppSuccess job={job} />;
+
+    const errorMsg = mutation.isError 
+        ? (mutation.error?.response?.data?.message || mutation.error?.response?.data?.error || "Failed to submit application.") 
+        : '';
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] flex flex-col font-['Poppins',sans-serif]">
@@ -58,7 +53,7 @@ export default function ApplyForm() {
                 <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none mb-10 size-[600px] bg-green-500/15 rounded-full blur-[150px]'></div>
                 
                 <div className='w-full lg:w-5/12 text-center lg:text-left z-10 flex flex-col items-center lg:items-start'>
-                    <Link to={`/job/${id}`} className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-200 transition-colors mb-6">
+                    <Link to={`/jobs/${id}`} className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-200 transition-colors mb-6">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                         Back to Job Description
                     </Link>
@@ -96,9 +91,9 @@ export default function ApplyForm() {
                         
                 <div className='w-full lg:w-7/12 max-w-xl bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 z-10 shadow-2xl'>
                     
-                    {status === 'error' && errorMsg && (
+                    {mutation.isError && (
                         <div className="mb-6 flex justify-center w-full">
-                            <Wrongs msg={errorMsg} onClose={() => { setStatus('idle'); setErrorMsg(''); }} />
+                            <Wrongs msg={errorMsg} onClose={() => mutation.reset()} />
                         </div>
                     )}
 
@@ -133,8 +128,8 @@ export default function ApplyForm() {
                             <p className='text-xs text-zinc-500 sm:max-w-[200px] text-center sm:text-left'>
                                 By applying, you agree to our <a href="#" className='text-zinc-300 hover:text-white underline'>Terms</a>.
                             </p>
-                            <button type="submit" disabled={status === 'submitting'} className='bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'>
-                                {status === 'submitting' ? 'Sending...' : 'Submit Application'}
+                            <button type="submit" disabled={mutation.isPending} className='bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'>
+                                {mutation.isPending ? 'Sending...' : 'Submit Application'}
                             </button>
                         </div>
                     </form>
