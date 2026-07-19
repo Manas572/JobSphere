@@ -6,6 +6,7 @@ import Home from './Pages/Home'
 import Jobpage from './Pages/Jobpage'
 import JobDetail from './Pages/Jobdetail'
 import Apply from './Pages/Apply'
+import Myprofile from './Pages/Myprofile'
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegPage />} />
+        <Route path="/profile" element={<Myprofile />} />
         <Route path="/" element={<Home />} />
         <Route path="/jobs" element={<Jobpage />} />
         <Route path="/jobs/:id" element={<JobDetail />} />

@@ -1,6 +1,8 @@
 import React from 'react'
 
-export default function Wrongs({msg}) {
+export default function Wrongs({ msg, onClose }) {
+    if (!msg) return null; 
+
     return (
         <div className="flex items-center justify-between max-w-80 w-full bg-red-600/20 text-red-600 px-3 h-10 rounded">
             <div className="flex items-center">
@@ -13,7 +15,12 @@ export default function Wrongs({msg}) {
                     <p className="text-sm ml-2">Oops! Something went terribly wrong.</p>
                 )}
             </div>   
-            <button type="button" aria-label="close" className="active:scale-90 transition-all ml-2 cursor-pointer text-red-500 hover:text-red-700">
+            <button 
+                type="button" 
+                aria-label="close" 
+                onClick={onClose} // Added onClick handler here
+                className="active:scale-90 transition-all ml-2 cursor-pointer text-red-500 hover:text-red-700"
+            >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15 5 5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>

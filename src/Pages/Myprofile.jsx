@@ -1,0 +1,47 @@
+import React, { useState, useEffect } from 'react';
+import PersonalInfoForm from '../Components/PersonalInfo';
+import EducationForm from '../Components/Education';
+import ExperienceForm from '../Components/ExperienceForm';
+import ProjectForm from '../Components/ProjectForm';
+import AppLoading from '../Components/AppLoading';
+import BackendApi from '../AxiInt';
+
+const Myprofile = () => {
+    const [step, setStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState({
+        personalInfo: null, educations: [], experiences: [], projects: []
+    });
+
+    useEffect(() => {
+        BackendApi.get("me/")
+            .then(res => setData(prev => ({ ...prev, personalInfo: res.data })))
+            .catch(console.error)
+            .finally(() => setIsLoading(false));
+    }, []);
+
+    const handleNext = (key, val) => {
+        const nextData = { ...data, [key]: val };
+        setData(nextData);
+        step < 4 ? setStep(step + 1) : submitToAPI(nextData);
+    };
+
+    const submitToAPI = async (finalData) => {
+        console.log(" Final Aggregated Payload ready for Django:", finalData);
+    };
+
+    if (isLoading) return <AppLoading />;
+
+    const backProps = { onBack: () => setStep(step - 1) };
+
+    return (
+        <div className="min-h-screen bg-black">
+            {step === 1 && <PersonalInfoForm initialData={data.personalInfo} onNext={v => handleNext('personalInfo', v)} />}
+            {step === 2 && <EducationForm initialData={data.educations} onNext={v => handleNext('educations', v.educations)} {...backProps} />}
+            {step === 3 && <ExperienceForm initialData={data.experiences} onNext={v => handleNext('experiences', v.experiences)} {...backProps} />}
+            {step === 4 && <ProjectForm initialData={data.projects} onNext={v => handleNext('projects', v.projects)} {...backProps} />}
+        </div>
+    );
+};
+
+export default Myprofile;

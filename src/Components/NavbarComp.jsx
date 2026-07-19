@@ -5,8 +5,9 @@ const NavbarComp = () => {
     const [menuOpen, setMenuOpen] = React.useState(false);
     
     const navItems = [
+        { name: 'home', link: '/' },
+        { name: 'profile', link: '/profile' },
         { name: 'jobs', link: '/jobs' },
-        { name: 'Services', link: '/services' },
         { name: 'Apps', link: '/apps' },
         { name: 'Pricing', link: '/pricing' },
         { name: 'About', link: '/about' }
