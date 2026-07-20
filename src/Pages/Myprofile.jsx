@@ -1,24 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PersonalInfoForm from '../Components/PersonalInfo';
 import EducationForm from '../Components/Education';
 import ExperienceForm from '../Components/ExperienceForm';
 import ProjectForm from '../Components/ProjectForm';
 import AppLoading from '../Components/AppLoading';
-import BackendApi from '../AxiInt';
+import { usePersonalInfo } from '../Queries/Personalinfofetch';
 
 const Myprofile = () => {
     const [step, setStep] = useState(1);
-    const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState({
         personalInfo: null, educations: [], experiences: [], projects: []
     });
 
-    useEffect(() => {
-        BackendApi.get("me/")
-            .then(res => setData(prev => ({ ...prev, personalInfo: res.data })))
-            .catch(console.error)
-            .finally(() => setIsLoading(false));
-    }, []);
+   const { data: personalInfo, isLoading, error } = usePersonalInfo();
 
     const handleNext = (key, val) => {
         const nextData = { ...data, [key]: val };
@@ -36,7 +30,7 @@ const Myprofile = () => {
 
     return (
         <div className="min-h-screen bg-black">
-            {step === 1 && <PersonalInfoForm initialData={data.personalInfo} onNext={v => handleNext('personalInfo', v)} />}
+            {step === 1 && <PersonalInfoForm initialData={personalInfo} onNext={v => handleNext('personalInfo', v)} />}
             {step === 2 && <EducationForm initialData={data.educations} onNext={v => handleNext('educations', v.educations)} {...backProps} />}
             {step === 3 && <ExperienceForm initialData={data.experiences} onNext={v => handleNext('experiences', v.experiences)} {...backProps} />}
             {step === 4 && <ProjectForm initialData={data.projects} onNext={v => handleNext('projects', v.projects)} {...backProps} />}

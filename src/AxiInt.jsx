@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "./store";
 
 const BackendApi = axios.create({
-  baseURL: " http://127.0.0.1:8000/", 
+  baseURL: "http://127.0.0.1:8000/", 
   timeout: 5000,
 });
 
@@ -31,7 +31,7 @@ BackendApi.interceptors.response.use(
         const { refreshToken, setTokens } = useAuthStore.getState();
 
         const response = await axios.post(
-          " http://127.0.0.1:8000/api/token/refresh/",
+          "http://127.0.0.1:8000/api/token/refresh/",
           { refresh: refreshToken }
         );
 
