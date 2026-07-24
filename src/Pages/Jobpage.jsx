@@ -48,16 +48,12 @@ export default function JobBoard() {
     };
 
     return (
-        /* 1. OUTER WRAPPER: No padding here so the Navbar can stretch 100% width */
         <div className="min-h-screen bg-[#0a0a0a] flex flex-col font-sans">
             
-            {/* The Navbar sits at the very top */}
             <NavbarComp />
 
-            {/* 2. INNER WRAPPER: Handles padding, centering, and growing to fill the rest of the screen */}
             <div className="flex flex-col items-center py-12 px-4 gap-10 flex-grow w-full">
                 
-                {/* Header & Search */}
                 <div className="w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
                         <h1 className="text-3xl font-bold text-white tracking-tight">Discover Jobs</h1>
@@ -71,7 +67,6 @@ export default function JobBoard() {
                     </div>
                 </div>
 
-                {/* Main Content Area */}
                 <div className="w-full max-w-6xl flex-grow flex flex-col items-center justify-start">
                     {isLoading ? (
                         <LoadingCard />
@@ -89,7 +84,6 @@ export default function JobBoard() {
                     )}
                 </div>
 
-                {/* Pagination controls at the bottom */}
                 {jobs.length > 0 && (
                     <div className="w-full flex justify-center mt-4">
                         <Pagination 

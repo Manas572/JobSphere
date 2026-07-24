@@ -18,7 +18,7 @@ export default function Wrongs({ msg, onClose }) {
             <button 
                 type="button" 
                 aria-label="close" 
-                onClick={onClose} // Added onClick handler here
+                onClick={onClose} 
                 className="active:scale-90 transition-all ml-2 cursor-pointer text-red-500 hover:text-red-700"
             >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

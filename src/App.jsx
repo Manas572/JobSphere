@@ -7,6 +7,7 @@ import Jobpage from './Pages/Jobpage'
 import JobDetail from './Pages/Jobdetail'
 import Apply from './Pages/Apply'
 import Myprofile from './Pages/Myprofile'
+import EducationUpdateForm from './Components/Eduupdform'
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/jobs" element={<Jobpage />} />
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/apply/:id" element={<Apply />} />
+        <Route path="/edu/:id" element={<EducationUpdateForm />} />
       </Routes>
   )
 }

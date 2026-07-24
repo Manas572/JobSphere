@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import WizardLayout from './FormLeft';
 import { useUpdatePersonalInfo } from '../Queries/UpdProfile';
+import { useSkillinfo } from '../Queries/Skillfetch'; 
 import Skilldropdown from './Skilldropdown';
-
 
 const inputClass = "bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-neutral-600 transition-colors w-full";
 
@@ -23,6 +23,8 @@ const PersonalInfoForm = ({ initialData, onNext }) => {
     });
     const [skills, setSkills] = useState([]);
     const updateProfile = useUpdatePersonalInfo();
+    
+    const { data: availableSkills } = useSkillinfo(); 
 
     useEffect(() => {
         if (!initialData) return;
@@ -36,17 +38,21 @@ const PersonalInfoForm = ({ initialData, onNext }) => {
 
     const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    const handleAddSkill = (newSkill) => {
-        if (newSkill && newSkill !== "Select" && !skills.includes(newSkill)) {
-            setSkills([...skills, newSkill]);
+    const handleAddSkill = (newSkillObj) => {
+        if (newSkillObj && !skills.some(s => (s.id || s) === (newSkillObj.id || newSkillObj))) {
+            setSkills([...skills, newSkillObj]);
         }
     };
 
-    const removeSkill = (skillToRemove) => setSkills(skills.filter(s => s !== skillToRemove));
+    const removeSkill = (skillIdToRemove) => {
+        setSkills(skills.filter(s => (s.id || s) !== skillIdToRemove));
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        updateProfile.mutate({ ...formData, skills }, {
+        const skillPayload = skills.map(s => s.id || s);
+
+        updateProfile.mutate({ ...formData, skills: skillPayload }, {
             onSuccess: (data) => { if (onNext) onNext(data); }
         });
     };
@@ -68,20 +74,24 @@ const PersonalInfoForm = ({ initialData, onNext }) => {
                 <div className="flex flex-col gap-2.5">
                     <label className="text-xs text-zinc-400">Skills</label>
                     
-                    {/* Render Dropdown */}
                     <Skilldropdown onSelect={handleAddSkill} />
                     
-                    {/* Render Selected Skills Tags */}
                     {skills.length > 0 && (
                         <div className="flex flex-wrap gap-2 bg-neutral-950 border border-neutral-800 rounded-lg p-2 min-h-[46px]">
-                            {skills.map(skill => (
-                                <span key={skill} className="flex items-center gap-1.5 bg-neutral-900 border border-neutral-800 text-zinc-300 text-xs px-2.5 py-1 rounded-md">
-                                    {skill}
-                                    <button type="button" onClick={() => removeSkill(skill)} className="text-zinc-500 hover:text-red-400 transition-colors cursor-pointer">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                                    </button>
-                                </span>
-                            ))}
+                            {skills.map(skill => {
+                                const skillId = skill.id || skill;
+                                const matchedSkill = (availableSkills || []).find(s => s.id === skillId);
+                                const displayName = matchedSkill ? matchedSkill.name : (skill.name || skill);
+
+                                return (
+                                    <span key={skillId} className="flex items-center gap-1.5 bg-neutral-900 border border-neutral-800 text-zinc-300 text-xs px-2.5 py-1 rounded-md">
+                                        {displayName}
+                                        <button type="button" onClick={() => removeSkill(skillId)} className="text-zinc-500 hover:text-red-400 transition-colors cursor-pointer">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                        </button>
+                                    </span>
+                                )
+                            })}
                         </div>
                     )}
                 </div>
