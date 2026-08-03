@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import WizardLayout from './FormLeft';
 import EduCard from './EduCard';
+import { useEduRegister } from '../Queries/Edureg';
 
 const inputClass = "bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-neutral-600 transition-colors w-full";
 const emptyForm = { institute: '', degree: '', field_of_study: '', start_date: '', end_date: '', cgpa: '', description: '' };
@@ -8,7 +9,7 @@ const emptyForm = { institute: '', degree: '', field_of_study: '', start_date: '
 const EducationForm = ({ onNext, onBack }) => {
     const [form, setForm] = useState(emptyForm);
     const [error, setError] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
+    const edureg = useEduRegister();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,37 +17,25 @@ const EducationForm = ({ onNext, onBack }) => {
     };
 
     const validate = (f) => {
-        if (!f.institute || !f.degree || !f.start_date) return "Institute, Degree, and Start Date are required.";
+        if (!f.institute || !f.degree || !f.start_date) return "Institution, Degree, and Start Date are required.";
         if (f.start_date && f.end_date && f.start_date > f.end_date) return "End date cannot be before start date.";
-        if (f.cgpa && f.cgpa < 0) return "cgpa cannot be -ve.";
+        if (f.cgpa && Number(f.cgpa) < 0) return "CGPA cannot be negative.";
         return null;
     };
 
-    const handleSave = async () => {
+    const handleSave = () => {
         const err = validate(form);
         if (err) return setError(err);
-        
-        setIsSaving(true);
-        try {
-            // will call register api here
-            // await registerApi(form);
-            
-            setForm(emptyForm);
-            // Hint: Trigger your React Query invalidation here so EduCard refetches
-        } catch (err) {
-            setError("Failed to save institution");
-        } finally {
-            setIsSaving(false);
-        }
+        edureg.mutate(form, {
+            onSuccess: () => setForm(emptyForm),
+            onError: () => setError("Failed to save institution")
+        });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
+    const handleSubmit = () => {
         if (form.institute || form.degree) {
             return setError("You have unsaved changes. Save the institution first, or clear the form.");
         }
-
         if (onNext) onNext();
     };
 
@@ -100,9 +89,9 @@ const EducationForm = ({ onNext, onBack }) => {
                         </div>
 
                         <div className="flex justify-start mt-2">
-                            <button type="button" onClick={handleSave} disabled={isSaving} className="bg-neutral-900 border border-neutral-700 hover:border-neutral-500 text-white text-xs px-5 py-2.5 rounded-lg flex items-center gap-2 disabled:opacity-50">
+                            <button type="button" onClick={handleSave} disabled={edureg.isPending} className="bg-neutral-900 border border-neutral-700 hover:border-neutral-500 text-white text-xs px-5 py-2.5 rounded-lg flex items-center gap-2 disabled:opacity-50">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg> 
-                                {isSaving ? "Saving..." : "Save this Institution"}
+                                {edureg.isPending ? "Saving..." : "Save this Institution"}
                             </button>
                         </div>
                     </div>

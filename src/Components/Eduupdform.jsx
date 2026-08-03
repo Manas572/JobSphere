@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
+import { useEduUpdate } from '../Queries/Eduupd';
+import { useLocation, useNavigate } from "react-router-dom";
 
 const inputClass = "bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-neutral-600 transition-colors w-full";
 
-const EducationUpdateForm = ({ initialData, onSave, onCancel }) => {
-    // initialData should be the specific education object fetched via API or passed from the list
-    const [form, setForm] = useState(initialData);
+const EducationUpdateForm = () => {
+    const { state } = useLocation();
+    const navigate = useNavigate();
+    const [form, setForm] = useState(state);
     const [error, setError] = useState('');
+    const updateEdu = useEduUpdate();
+
+    // Guard against direct URL access (hard-refresh) where state is null
+    if (!form) return <p className="text-zinc-400 p-4">No data found. Please go back.</p>;
+
+    const onCancel = () => navigate(-1);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,7 +24,7 @@ const EducationUpdateForm = ({ initialData, onSave, onCancel }) => {
     const validate = (f) => {
         if (!f.institute || !f.degree || !f.start_date) return "Institute, Degree, and Start Date are required.";
         if (f.start_date && f.end_date && f.start_date > f.end_date) return "End date cannot be before start date.";
-        if (f.cgpa && f.cgpa < 0) return "CGPA cannot be -ve.";
+        if (f.cgpa && Number(f.cgpa) < 0) return "CGPA cannot be negative.";
         return null;
     };
 
@@ -24,8 +33,10 @@ const EducationUpdateForm = ({ initialData, onSave, onCancel }) => {
         const err = validate(form);
         if (err) return setError(err);
         
-        // Pass to parent to handle API PUT/PATCH, then close
-        onSave(form); 
+        updateEdu.mutate({ id: form.id, formData: form }, {
+            onSuccess: () => onCancel(), 
+            onError: () => setError("Failed to update education.")
+        });
     };
 
     return (
@@ -74,7 +85,9 @@ const EducationUpdateForm = ({ initialData, onSave, onCancel }) => {
 
                 <div className="flex justify-between items-center mt-6 pt-6 border-t border-neutral-800/50">
                     <button type="button" onClick={onCancel} className="text-zinc-400 hover:text-white font-medium text-sm py-2">Cancel</button>
-                    <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-medium text-sm px-8 py-3 rounded-lg">Save Changes</button>
+                    <button type="submit" disabled={updateEdu.isPending} className="bg-green-600 hover:bg-green-700 text-white font-medium text-sm px-8 py-3 rounded-lg disabled:opacity-50">
+                        {updateEdu.isPending ? "Saving..." : "Save Changes"}
+                    </button>
                 </div>
             </form>
         </div>
