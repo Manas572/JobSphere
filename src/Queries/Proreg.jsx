@@ -1,21 +1,21 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import BackendApi from "../AxiInt";
 
-const EduRegister = async (formData) => {
-    const res = await BackendApi.post("education/", formData);
+const ProRegister = async (formData) => {
+    const res = await BackendApi.post("project/", formData);
     // console.log(formData);
     return res.data;
 };
 
-export function useEduRegister() {
+export function useProRegister() {
     const queryClient = useQueryClient();
 
     return useMutation({
-    mutationFn: EduRegister,
+    mutationFn: ProRegister,
 
     onSuccess: () => {
         queryClient.invalidateQueries({
-            queryKey: ["eduinfo"],
+            queryKey: ["proinfo"],
         });
     },
 
