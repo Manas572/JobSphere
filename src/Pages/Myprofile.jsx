@@ -12,7 +12,7 @@ const Myprofile = () => {
         personalInfo: null, educations: [], experiences: [], projects: []
     });
 
-   const { data: personalInfo, isLoading, error } = usePersonalInfo();
+    const { data: personalInfo, isLoading } = usePersonalInfo();
 
     const handleNext = (key, val) => {
         const nextData = { ...data, [key]: val };
@@ -21,7 +21,7 @@ const Myprofile = () => {
     };
 
     const submitToAPI = async (finalData) => {
-        console.log(" Final Aggregated Payload ready for Django:", finalData);
+        console.log("Final Aggregated Payload ready for Django:", finalData);
     };
 
     if (isLoading) return <AppLoading />;
@@ -31,9 +31,9 @@ const Myprofile = () => {
     return (
         <div className="min-h-screen bg-black">
             {step === 1 && <PersonalInfoForm initialData={personalInfo} onNext={v => handleNext('personalInfo', v)} />}
-            {step === 2 && <EducationForm  onNext={v => setStep(3)} {...backProps} />}
-            {step === 4 && <ProjectForm  onNext={v => setStep(4)} {...backProps} />}
-            {step === 3 && <ExperienceForm  onNext={v => handleNext('projects', v.projects)} {...backProps} />}
+            {step === 2 && <EducationForm onNext={v => handleNext('educations', v)} {...backProps} />}
+            {step === 3 && <ExperienceForm onNext={v => handleNext('experiences', v)} {...backProps} />}
+            {step === 4 && <ProjectForm onNext={v => handleNext('projects', v)} {...backProps} />}
         </div>
     );
 };
