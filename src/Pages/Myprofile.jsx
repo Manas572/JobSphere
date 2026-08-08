@@ -31,9 +31,9 @@ const Myprofile = () => {
     return (
         <div className="min-h-screen bg-black">
             {step === 1 && <PersonalInfoForm initialData={personalInfo} onNext={v => handleNext('personalInfo', v)} />}
-            {step === 2 && <EducationForm initialData={data.educations} onNext={v => handleNext('educations', v.educations)} {...backProps} />}
-            {step === 3 && <ExperienceForm initialData={data.experiences} onNext={v => handleNext('experiences', v.experiences)} {...backProps} />}
-            {step === 4 && <ProjectForm initialData={data.projects} onNext={v => handleNext('projects', v.projects)} {...backProps} />}
+            {step === 2 && <EducationForm  onNext={v => setStep(3)} {...backProps} />}
+            {step === 4 && <ProjectForm  onNext={v => setStep(4)} {...backProps} />}
+            {step === 3 && <ExperienceForm  onNext={v => handleNext('projects', v.projects)} {...backProps} />}
         </div>
     );
 };
