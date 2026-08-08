@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import WizardLayout from './FormLeft';
-import ProjectCard from './ProjectCard';
+
 import Skilldropdown from './Skilldropdown';
 import { useProRegister } from '../Queries/Proreg';
 import { useSkillinfo } from '../Queries/Skillfetch';
+import ProjectCard from './ProCard';
 
 const inputClass = "bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-neutral-600 transition-colors w-full";
 const emptyForm = { name: '', description: '', github_link: '', deployed_link: '' };

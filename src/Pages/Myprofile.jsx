@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import PersonalInfoForm from '../Components/PersonalInfo';
 import EducationForm from '../Components/Education';
 import ExperienceForm from '../Components/ExperienceForm';
-import ProjectForm from '../Components/ProjectForm';
 import AppLoading from '../Components/AppLoading';
 import { usePersonalInfo } from '../Queries/Personalinfofetch';
+import ProjectForm from '../Components/Project';
 
 const Myprofile = () => {
     const [step, setStep] = useState(1);

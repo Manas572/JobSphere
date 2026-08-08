@@ -3,7 +3,7 @@ import BackendApi from "../AxiInt";
 
 const ExpRegister = async (formData) => {
     const res = await BackendApi.post("experience/", formData);
-    // console.log(formData);
+     console.log(formData);
     return res.data;
 };
 

@@ -22,7 +22,7 @@ const ExperienceUpdateForm = () => {
     };
 
     const validate = (f) => {
-        if (!f.company || !f.role || !f.start_date) return "Company, Role, and Start Date are required.";
+        if (!f.company || !f.designation || !f.start_date) return "Company, Role, and Start Date are required.";
         if (!f.currently_working && f.start_date && f.end_date && f.start_date > f.end_date) return "End date cannot be before start date.";
         return null;
     };
@@ -52,7 +52,7 @@ const ExperienceUpdateForm = () => {
                     </div>
                     <div className="flex flex-col gap-2.5">
                         <label className="text-xs text-zinc-400">Role <span className="text-red-500">*</span></label>
-                        <input type="text" name="role" value={form.role || ''} onChange={handleChange} className={inputClass} />
+                        <input type="text" name="designation" value={form.designation || ''} onChange={handleChange} className={inputClass} />
                     </div>
                 </div>
 

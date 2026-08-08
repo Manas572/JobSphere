@@ -3,9 +3,8 @@ import WizardLayout from './FormLeft';
 import ExpCard from './ExpCard';
 import { useExpRegister } from '../Queries/Expreg';
 
-
 const inputClass = "bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none focus:border-neutral-600 transition-colors w-full";
-const emptyForm = { company: '', role: '', employment_type: '', location: '', start_date: '', end_date: '', currently_working: false, description: '' };
+const emptyForm = { company: '', designation: '', employment_type: '', location: '', start_date: '', end_date: '', currently_working: false, description: '' };
 
 const ExperienceForm = ({ onNext, onBack }) => {
     const [form, setForm] = useState(emptyForm);
@@ -19,7 +18,7 @@ const ExperienceForm = ({ onNext, onBack }) => {
     };
 
     const validate = (f) => {
-        if (!f.company || !f.role || !f.start_date) return "Company, Role, and Start Date are required.";
+        if (!f.company || !f.designation || !f.start_date) return "Company, Role, and Start Date are required.";
         if (!f.currently_working && f.start_date && f.end_date && f.start_date > f.end_date) return "End date cannot be before start date.";
         return null;
     };
@@ -43,7 +42,6 @@ const ExperienceForm = ({ onNext, onBack }) => {
     return (
         <WizardLayout step={3} title="Professional Experience." description="Add your work history, internships, and professional roles.">
             <h2 className="text-xl font-medium text-white mb-6">Experience Details</h2>
-            
             <div className="flex flex-col gap-6">
                 <ExpCard />
 
@@ -59,14 +57,20 @@ const ExperienceForm = ({ onNext, onBack }) => {
                             </div>
                             <div className="flex flex-col gap-2.5">
                                 <label className="text-xs text-zinc-400">Role <span className="text-red-500">*</span></label>
-                                <input type="text" name="role" value={form.role} onChange={handleChange} placeholder="e.g., Software Engineer" className={inputClass} />
+                                <input type="text" name="designation" value={form.designation} onChange={handleChange} placeholder="e.g., Software Engineer" className={inputClass} />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div className="flex flex-col gap-2.5">
                                 <label className="text-xs text-zinc-400">Employment Type</label>
-                                <input type="text" name="employment_type" value={form.employment_type} onChange={handleChange} placeholder="e.g., Full-time, Internship" className={inputClass} />
+                                <select name="employment_type" value={form.employment_type} onChange={handleChange} className={`${inputClass} appearance-none`}>
+                                    <option value="" disabled>Select Type...</option>
+                                    <option value="FULL_TIME">Full Time</option>
+                                    <option value="INTERN">Intern</option>
+                                    <option value="PART_TIME">Part Time</option>
+                                    <option value="CONTRACT">Contract</option>
+                                </select>
                             </div>
                             <div className="flex flex-col gap-2.5">
                                 <label className="text-xs text-zinc-400">Location</label>
