@@ -7,7 +7,6 @@ import NavbarComp from "../Components/NavbarComp";
 export default function JobDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
-
     const { data: job, isLoading } = useQuery({
         queryKey: ["job", id],
         queryFn: async () => {

@@ -10,6 +10,7 @@ import Myprofile from './Pages/Myprofile'
 import EducationUpdateForm from './Components/Eduupdform'
 import ProjectUpdateForm from './Components/Proupdform'
 import ExperienceUpdateForm from './Components/Expupdform'
+import Resume from './Pages/Resume'
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/register" element={<RegPage />} />
         <Route path="/profile" element={<Myprofile />} />
         <Route path="/" element={<Home />} />
+        <Route path="/resume" element={<Resume />} />
         <Route path="/jobs" element={<Jobpage />} />
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/apply/:id" element={<Apply />} />

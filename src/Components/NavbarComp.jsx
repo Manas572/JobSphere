@@ -9,7 +9,7 @@ const NavbarComp = () => {
         { name: 'profile', link: '/profile' },
         { name: 'jobs', link: '/jobs' },
         { name: 'Apps', link: '/apps' },
-        { name: 'Pricing', link: '/pricing' },
+        { name: 'resume', link: '/resume' },
         { name: 'About', link: '/about' }
     ];
 
