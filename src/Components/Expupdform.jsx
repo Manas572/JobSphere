@@ -33,7 +33,9 @@ const ExperienceUpdateForm = () => {
         if (err) return setError(err);
         
         updateExp.mutate({ id: form.id, formData: form }, {
-            onSuccess: () => onCancel(), 
+            onSuccess: () => navigate("/profile",{
+                state: {step:3}
+            }), 
             onError: () => setError("Failed to update experience.")
         });
     };

@@ -53,7 +53,7 @@ const ProjectForm = ({ onNext, onBack, step = 3 }) => {
     };
 
     return (
-        <WizardLayout step={step} title="Projects." description="Showcase your best work. Include repositories, live links, and the tech stack you used.">
+        <WizardLayout step={4} title="Projects." description="Showcase your best work. Include repositories, live links, and the tech stack you used.">
             <h2 className="text-xl font-medium text-white mb-6">Project Details</h2>
             
             <div className="flex flex-col gap-6">

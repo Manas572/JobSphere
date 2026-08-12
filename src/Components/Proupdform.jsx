@@ -46,7 +46,9 @@ const ProjectUpdateForm = () => {
         
         const payload = { ...form, tech_stack: techStack.map(s => s.id || s) };
         updateProj.mutate({ id: form.id, formData: payload }, {
-            onSuccess: () => onCancel(), 
+            onSuccess: () => navigate("/profile",{
+                state:{step:4}
+            }), 
             onError: () => setError("Failed to update project.")
         });
     };

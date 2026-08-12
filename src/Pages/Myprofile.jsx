@@ -5,29 +5,22 @@ import ExperienceForm from '../Components/ExperienceForm';
 import AppLoading from '../Components/AppLoading';
 import { usePersonalInfo } from '../Queries/Personalinfofetch';
 import ProjectForm from '../Components/Project';
+import { useLocation } from 'react-router-dom';
 
 const Myprofile = () => {
-    const [step, setStep] = useState(1);
+    const { data: personalInfo, isLoading } = usePersonalInfo();
+    const loc=useLocation()
+    const [step, setStep] = useState(loc.state?.step||1);
     const [data, setData] = useState({
         personalInfo: null, educations: [], experiences: [], projects: []
     });
-
-    const { data: personalInfo, isLoading } = usePersonalInfo();
-
     const handleNext = (key, val) => {
         const nextData = { ...data, [key]: val };
         setData(nextData);
-        step < 4 ? setStep(step + 1) : submitToAPI(nextData);
+        step < 4 ? setStep(step + 1) : setStep(1);
     };
-
-    const submitToAPI = async (finalData) => {
-        console.log("Final Aggregated Payload ready for Django:", finalData);
-    };
-
     if (isLoading) return <AppLoading />;
-
     const backProps = { onBack: () => setStep(step - 1) };
-
     return (
         <div className="min-h-screen bg-black">
             {step === 1 && <PersonalInfoForm initialData={personalInfo} onNext={v => handleNext('personalInfo', v)} />}

@@ -10,12 +10,8 @@ const EducationUpdateForm = () => {
     const [form, setForm] = useState(state);
     const [error, setError] = useState('');
     const updateEdu = useEduUpdate();
-
-    // Guard against direct URL access (hard-refresh) where state is null
     if (!form) return <p className="text-zinc-400 p-4">No data found. Please go back.</p>;
-
     const onCancel = () => navigate(-1);
-
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
         if (error) setError('');
@@ -32,9 +28,10 @@ const EducationUpdateForm = () => {
         e.preventDefault();
         const err = validate(form);
         if (err) return setError(err);
-        
         updateEdu.mutate({ id: form.id, formData: form }, {
-            onSuccess: () => onCancel(), 
+            onSuccess: () => navigate("/profile",{
+                state :{step:2}
+            }), 
             onError: () => setError("Failed to update education.")
         });
     };
