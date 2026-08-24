@@ -52,8 +52,7 @@ export default function RegisterForm() {
                     const firstKey = Object.keys(responseData)[0];
                     errorMessage = `${firstKey}: ${responseData[firstKey][0]}`;
                 }
-            }
-            
+            } 
             setError(errorMessage);
         }
     }
