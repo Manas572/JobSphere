@@ -6,7 +6,7 @@ export default function Modern({ edu_list, exp_list, pro_list, skill_list }) {
   const accent = accentColor || "#3B82F6";
 
   return (
-    <div className="max-w-4xl mx-auto bg-white text-gray-800 font-sans min-h-screen shadow-md">
+    <div className=" w-full max-w-4xl mx-auto bg-white text-gray-800 font-sans min-h-screen shadow-md">
       <header className="p-8 text-white" style={{ backgroundColor: accent }}>
         <h1 className="text-4xl font-extrabold tracking-tight">
           {title || "Untitled Resume"}

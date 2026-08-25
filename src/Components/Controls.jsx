@@ -7,10 +7,11 @@ import { useexpinfo } from '../Queries/Explist';
 import { useproinfo } from '../Queries/Prolist';
 import { useSkillinfo } from '../Queries/Skillfetch';
 import Checkbox from './Checkbox';
+import { usePersonalInfo } from '../Queries/Personalinfofetch';
 
 
 const Controls = () => {
-  const { title, setTitle, isPublic, setIsPublic, accentColor, setAccentColor, professional_summary, setProfessionalSummary } = useResumeStore();
+  const { title, setTitle, isPublic, setIsPublic, accentColor, setAccentColor, professional_summary, setProSum,template,setTemplate } = useResumeStore();
   const [step, setStep] = useState(1);
   const { data: edu_list } = useeduinfo();
   const { data: exp_list } = useexpinfo();
@@ -50,6 +51,19 @@ const Controls = () => {
             />
           </div>
 
+          <div>
+            <label className="block text-sm text-zinc-400 mb-1">Template</label>
+            <select 
+              value={template} 
+              onChange={(e) => setTemplate(e.target.value)}
+              className="bg-zinc-900 border border-zinc-800 rounded p-2 text-white outline-none focus:border-zinc-600 cursor-pointer"
+            >
+              <option value="Classic">Classic</option>
+              <option value="Minimal">Minimal</option>
+              <option value="Modern">Modern</option>
+            </select>
+          </div>
+
           <label className="flex items-center gap-2 cursor-pointer mt-5">
             <input 
               type="checkbox" 
@@ -68,7 +82,7 @@ const Controls = () => {
             <h2 className="text-lg font-medium text-white mb-4">Professional Summary</h2>
             <textarea 
               value={professional_summary}
-              onChange={(e) => setProfessionalSummary(e.target.value)}
+              onChange={(e) => setProSum(e.target.value)}
               placeholder="Write a brief professional summary..."
               className="w-full bg-zinc-900 border border-zinc-800 rounded p-3 text-white outline-none focus:border-zinc-600 h-40 resize-y"
             />

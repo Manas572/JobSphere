@@ -17,7 +17,7 @@ const Checkbox = ({ title, items, field, displayKey = 'title' }) => {
               onChange={() => toggleList(field, item.id)}
               className="w-5 h-5 accent-blue-500 rounded cursor-pointer"
             />
-            <span className="text-sm text-zinc-200">{item[displayKey] || item.name}</span>
+            <span className="text-sm text-zinc-200">{item[displayKey] || item.name || item.degree}</span>
           </label>
         ))}
       </div>

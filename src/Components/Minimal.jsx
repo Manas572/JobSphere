@@ -14,7 +14,7 @@ export default function Minimal({ edu_list, exp_list, pro_list, skill_list }) {
   const { accentColor, title, professional_summary } = useResumeStore();
 
   return (
-    <div className="max-w-3xl mx-auto p-12 bg-white text-gray-800 font-sans min-h-screen">
+    <div className="w-full max-w-3xl mx-auto p-12 bg-white text-gray-800 font-sans min-h-screen">
       <h1 className="text-2xl font-light tracking-tight mb-4" style={{ color: accentColor || "#111" }}>
         {title || "Untitled Resume"}
       </h1>

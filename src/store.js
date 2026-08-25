@@ -32,19 +32,21 @@ export const useResumeStore = create((set) => ({
   title: "Untitled",
   accentColor: "#3B82F6",
   isPublic: false,
-  professional_summary:"",
-  template:'Classic',
-  inc_edu:[],
-  inc_exp:[],
-  inc_pro:[],
-  inc_skills:[],
+  professional_summary: "",
+  template: "Classic",
+  included_educations: [],
+  included_experiences: [],
+  included_projects: [],
+  included_skills: [],
   setTitle: (title) => set({ title }),
   setAccentColor: (accentColor) => set({ accentColor }),
-  setProSum: (professional_summary) => set({ professional_summary }),
+  setProSum: (professional_summary) =>set({ professional_summary }),
   setIsPublic: (isPublic) => set({ isPublic }),
   setTemplate: (template) => set({ template }),
-  set_inc_edu: (inc_edu) => set({ inc_edu }),
-  set_inc_exp: (inc_exp) => set({ inc_exp }),
-  set_inc_exp: (inc_pro) => set({ inc_pro }),
-  set_inc_exp: (inc_skills) => set({ inc_skills }),
+  toggleList: (field, id) =>
+    set((state) => ({
+      [field]: state[field].includes(id)
+        ? state[field].filter((itemId) => itemId !== id)
+        : [...state[field], id],
+    })),
 }));
