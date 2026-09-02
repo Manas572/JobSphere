@@ -7,6 +7,7 @@ import { useSkillinfo } from '../Queries/Skillfetch'
 import Classic from './Classic'
 import Minimal from './Minimal'
 import { usePersonalInfo } from '../Queries/Personalinfofetch'
+import Modern from './Modern'
 
 const Preview = () => {
     const {data:edu_list}=useeduinfo()

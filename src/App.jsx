@@ -12,6 +12,7 @@ import ProjectUpdateForm from './Components/Proupdform'
 import ExperienceUpdateForm from './Components/Expupdform'
 import Resume from './Pages/Resume'
 import ResCreate from './Pages/ResCreate'
+import Interview from './Pages/Interview'
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/resume" element={<Resume />} />
         <Route path="/resume/createres" element={<ResCreate />} />
         <Route path="/jobs" element={<Jobpage />} />
+        <Route path="/interview" element={<Interview />} />
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/apply/:id" element={<Apply />} />
         <Route path="/edu/:id" element={<EducationUpdateForm />} />

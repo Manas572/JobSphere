@@ -8,22 +8,26 @@ import { useproinfo } from '../Queries/Prolist';
 import { useSkillinfo } from '../Queries/Skillfetch';
 import Checkbox from './Checkbox';
 import { usePersonalInfo } from '../Queries/Personalinfofetch';
+import { useResCreate } from '../Queries/ResCrete';
 
 
 const Controls = () => {
-  const { title, setTitle, isPublic, setIsPublic, accentColor, setAccentColor, professional_summary, setProSum,template,setTemplate } = useResumeStore();
+  const { title, setTitle, isPublic, setIsPublic, accentColor, setAccentColor, professional_summary, setProSum,template,setTemplate,included_educations,included_experiences,included_skills,included_projects} = useResumeStore();
   const [step, setStep] = useState(1);
   const { data: edu_list } = useeduinfo();
   const { data: exp_list } = useexpinfo();
   const { data: pro_list } = useproinfo();
   const { data: skill_list } = useSkillinfo();
-
+  const resreg=useResCreate()
   const handleRegister = () => {
-    console.log("Saving to Django...");
+    resreg.mutate({
+      title,public:isPublic,template:template.toLowerCase(),accent_color:accentColor,professional_summary,included_educations,included_experiences,included_projects,included_skills
+    });
+    setTimeout(() => window.print(), 150);
   };
 
   return (
-    <div className="w-1/2 p-8 overflow-y-auto border-r border-zinc-800 flex flex-col h-full">
+    <div className="w-1/2 p-8 overflow-y-auto border-r border-zinc-800 flex flex-col h-full print:hidden">
       <Link to="/resume/" className="inline-flex items-center gap-2 mb-8 text-zinc-400 hover:text-white transition-colors">
         <ArrowLeftToLine size={20} />
         <span>Back</span>

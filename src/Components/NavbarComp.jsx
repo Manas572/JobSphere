@@ -8,7 +8,7 @@ const NavbarComp = () => {
         { name: 'home', link: '/' },
         { name: 'profile', link: '/profile' },
         { name: 'jobs', link: '/jobs' },
-        { name: 'Apps', link: '/apps' },
+        { name: 'interview', link: '/interview' },
         { name: 'resume', link: '/resume' },
         { name: 'About', link: '/about' }
     ];

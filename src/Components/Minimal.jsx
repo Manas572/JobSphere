@@ -2,25 +2,37 @@ import React from 'react';
 import { useResumeStore } from "../store";
 
 const Section = ({ title, children }) => (
-  <div className="mt-8">
-    <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+  <div className="mt-4 print:mt-3">
+    <h2 className="text-base font-bold uppercase border-b-[1.5px] border-black mb-2 pb-0.5 text-black">
       {title}
     </h2>
-    {children}
+    <div className="space-y-3 print:space-y-2 text-black">
+      {children}
+    </div>
   </div>
 );
 
-export default function Minimal({ edu_list, exp_list, pro_list, skill_list }) {
-  const { accentColor, title, professional_summary } = useResumeStore();
+export default function Minimal({ edu_list, exp_list, pro_list, skill_list, per_info }) {
+  const { title, professional_summary } = useResumeStore();
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-12 bg-white text-gray-800 font-sans min-h-screen">
-      <h1 className="text-2xl font-light tracking-tight mb-4" style={{ color: accentColor || "#111" }}>
-        {title || "Untitled Resume"}
-      </h1>
+    <div className="w-full max-w-[850px] mx-auto p-10 bg-white text-black font-serif min-h-screen print:p-0 print:min-h-0 leading-snug">
+      
+      <header className="text-center mb-5 print:mb-4">
+        <h1 className="text-3xl font-bold uppercase mb-1 text-black">
+          {title || "Untitled"}
+        </h1>
+        <div className="flex flex-wrap justify-center items-center text-sm text-black divide-x divide-black">
+          {per_info?.user?.email && <span className="px-2">{per_info.user.email}</span>}
+          {per_info?.phone_number && <span className="px-2">{per_info.phone_number}</span>}
+          {per_info?.linkedin_url && <a href={per_info.linkedin_url} className="px-2 hover:underline">LinkedIn</a>}
+          {per_info?.github_url && <a href={per_info.github_url} className="px-2 hover:underline">GitHub</a>}
+          {per_info?.portfolio_url && <a href={per_info.portfolio_url} className="px-2 hover:underline">Portfolio</a>}
+        </div>
+      </header>
 
       {professional_summary && (
-        <p className="text-sm font-light leading-relaxed text-gray-600">
+        <p className="text-sm text-black whitespace-pre-line mb-4">
           {professional_summary}
         </p>
       )}
@@ -28,10 +40,14 @@ export default function Minimal({ edu_list, exp_list, pro_list, skill_list }) {
       {edu_list?.length > 0 && (
         <Section title="Education">
           {edu_list.map((edu, idx) => (
-            <div key={edu.id || idx} className="mb-4">
-              <h3 className="text-sm font-medium">{edu.degree}</h3>
-              <div className="text-sm font-light text-gray-600 mt-0.5">{edu.institute}</div>
-              <p className="text-sm text-gray-500 font-light mt-1">{edu.cgpa}</p>
+            <div key={edu.id || idx} className="text-sm">
+              <div className="flex justify-between font-bold">
+                <span>{edu.institute}</span>
+                <span className="font-normal">{edu.cgpa}</span>
+              </div>
+              <div className="flex justify-between italic">
+                <span>{edu.degree}</span>
+              </div>
             </div>
           ))}
         </Section>
@@ -40,12 +56,19 @@ export default function Minimal({ edu_list, exp_list, pro_list, skill_list }) {
       {exp_list?.length > 0 && (
         <Section title="Experience">
           {exp_list.map((exp, idx) => (
-            <div key={exp.id || idx} className="mb-4">
-              <div className="flex justify-between items-baseline">
-                <h3 className="text-sm font-medium">{exp.designation} <span className="font-light text-gray-500">at {exp.company}</span></h3>
-                <span className="text-xs text-gray-400 font-light">{exp.start_date} - {exp.end_date}</span>
+            <div key={exp.id || idx} className="text-sm">
+              <div className="flex justify-between font-bold">
+                <span>{exp.company}</span>
+                <span className="font-normal">{exp.start_date} - {exp.end_date}</span>
               </div>
-              <p className="text-sm text-gray-500 font-light mt-1.5">{exp.description}</p>
+              <div className="italic mb-1">{exp.designation}</div>
+              <div className="text-black whitespace-pre-line ml-4">
+               {exp.description && (
+  <div className="text-black whitespace-pre-line ml-4">
+    • {exp.description.replace(/\n/g, '\n• ')}
+  </div>
+)}
+              </div>
             </div>
           ))}
         </Section>
@@ -54,24 +77,31 @@ export default function Minimal({ edu_list, exp_list, pro_list, skill_list }) {
       {pro_list?.length > 0 && (
         <Section title="Projects">
           {pro_list.map((proj, idx) => (
-            <div key={proj.id || idx} className="mb-4">
-              <h3 className="text-sm font-medium">{proj.name || "Project"}</h3>
-              <p className="text-sm text-gray-500 font-light mt-1">{proj.description}</p>
-              {proj.techstack && <p className="text-xs text-gray-400 font-light mt-1">{proj.techstack}</p>}
-              <div className="flex gap-3 text-xs text-gray-400 font-light mt-1.5 hover:[&>a]:text-gray-700 transition-colors">
-                {proj.github_link && <a href={proj.github_link} target="_blank" rel="noreferrer">GitHub</a>}
-                {proj.deployed_link && <a href={proj.deployed_link} target="_blank" rel="noreferrer">Live</a>}
+            <div key={proj.id || idx} className="text-sm">
+              <div className="flex justify-between font-bold">
+                <span>
+                  {proj.name} {proj.techstack && <span className="font-normal italic">| {proj.techstack}</span>}
+                </span>
+                <div className="font-normal space-x-2">
+                  {proj.github_link && <a href={proj.github_link} className="hover:underline">[GitHub]</a>}
+                  {proj.deployed_link && <a href={proj.deployed_link} className="hover:underline">[Live Link]</a>}
+                </div>
               </div>
+              {proj.description && (
+  <div className="text-black whitespace-pre-line ml-4 mt-1">
+    • {proj.description.replace(/\n/g, '\n• ')}
+  </div>
+)}
             </div>
           ))}
         </Section>
       )}
       
       {skill_list?.length > 0 && (
-        <Section title="Skills">
-          <p className="text-sm text-gray-500 font-light leading-relaxed">
-            {skill_list.map(skill => skill.name || skill).join(" • ")}
-          </p>
+        <Section title="Technical Skills">
+          <div className="text-sm text-black whitespace-pre-line">
+            • {skill_list.map(skill => skill.name || skill).join(", ")}
+          </div>
         </Section>
       )}
     </div>
