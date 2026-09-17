@@ -1,40 +1,44 @@
-import React from 'react'
+export default function Footer() {
+  const cols = [
+    { title: "Product", links: ["Resume Builder", "Mock Interviews", "Job Board", "ATS Checker"] },
+    { title: "Company", links: ["About", "Careers", "Blog", "Contact"] },
+    { title: "Resources", links: ["Resume Templates", "Interview Guides", "Help Center", "Privacy"] },
+  ];
 
-const Footer = () => {
-    const companyLogos = ["slack", "framer", "netflix", "google", "linkedin", "instagram", "facebook"];
+  return (
+    <footer className="bg-[#0a0a10] border-t border-gray-800/60 px-6 pt-16 pb-8">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-10">
+        <div>
+          <p className="text-xl font-bold text-white font-IBMPlexBold">
+            Next<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Hire</span>
+          </p>
+          <p className="mt-3 text-sm text-gray-500 leading-relaxed">
+            AI-powered resumes, interviews, and job discovery — all in one place.
+          </p>
+        </div>
 
-    return (
-        <>
-            <style>{`
-                .marquee-inner {
-                    animation: marqueeScroll linear infinite;
-                }
+        {cols.map((col) => (
+          <div key={col.title}>
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">{col.title}</p>
+            <ul className="mt-4 space-y-2.5">
+              {col.links.map((l) => (
+                <li key={l}>
+                  <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">{l}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
 
-                @keyframes marqueeScroll {
-                    0% {
-                        transform: translateX(0%);
-                    }
-
-                    100% {
-                        transform: translateX(-50%);
-                    }
-                }
-            `}</style>
-
-            <div className="overflow-hidden w-full relative max-w-5xl mx-auto select-none">
-                <div className="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
-                <div className="marquee-inner flex will-change-transform min-w-[200%]" style={{ animationDuration: "15s" }}>
-                    <div className="flex">
-                        {[...companyLogos, ...companyLogos].map((company, index) => (
-                            <img key={index} src={`https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/companyLogo/${company}.svg`}
-                                alt={company} className="w-full h-full object-cover mx-6" draggable={false} />
-                        ))}
-                    </div>
-                </div>
-                <div className="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
-            </div>
-        </>
-    );
-};
-
-export default Footer
+      <div className="max-w-6xl mx-auto mt-12 pt-6 border-t border-gray-800/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p className="text-xs text-gray-600">© 2026 NextHire. All rights reserved.</p>
+        <div className="flex gap-5 text-xs text-gray-500">
+          <a href="#" className="hover:text-gray-300 transition-colors">Terms</a>
+          <a href="#" className="hover:text-gray-300 transition-colors">Privacy</a>
+          <a href="#" className="hover:text-gray-300 transition-colors">Cookies</a>
+        </div>
+      </div>
+    </footer>
+  );
+}

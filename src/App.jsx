@@ -13,6 +13,7 @@ import ExperienceUpdateForm from './Components/Expupdform'
 import Resume from './Pages/Resume'
 import ResCreate from './Pages/ResCreate'
 import Interview from './Pages/Interview'
+import InterviewPage from './Components/Intpage'
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/resume/createres" element={<ResCreate />} />
         <Route path="/jobs" element={<Jobpage />} />
         <Route path="/interview" element={<Interview />} />
+         <Route path="/interview/session" element={<InterviewPage />} />
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/apply/:id" element={<Apply />} />
         <Route path="/edu/:id" element={<EducationUpdateForm />} />

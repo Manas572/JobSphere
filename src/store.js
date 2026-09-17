@@ -50,3 +50,31 @@ export const useResumeStore = create((set) => ({
         : [...state[field], id],
     })),
 }));
+
+export const PROBLEMS = [
+  { n: 1, rating: 1000 },
+  { n: 2, rating: 1400 },
+  { n: 3, rating: 1700 },
+];
+
+export const useInterviewStore = create((set) => ({
+  round: 1, // 1 | 2 | 3 — sequential lock, only nextRound() advances
+  r1Messages: [
+    { from: 'ai', text: "Round 1 — Conceptual. Explain the difference between a process and a thread, and when you'd prefer one over the other." },
+  ],
+  r3Messages: [
+    { from: 'ai', text: "Round 3 — Project Deep-Dive. Pick the project on your resume you're proudest of and walk me through its architecture." },
+  ],
+  cf: { handle: null, verified: false, problemIndex: 0 }, 
+
+  addMessage: (round, msg) =>
+    set((s) =>
+      round === 1
+        ? { r1Messages: [...s.r1Messages, msg] }
+        : { r3Messages: [...s.r3Messages, msg] },
+    ),
+  nextRound: () => set((s) => ({ round: Math.min(3, s.round + 1) })),
+  verifyHandle: (handle) => set({ cf: { handle, verified: true, problemIndex: 0 } }),
+  passProblem: () =>
+    set((s) => ({ cf: { ...s.cf, problemIndex: s.cf.problemIndex + 1 } })),
+}));
