@@ -1,43 +1,127 @@
-export default function Feature() {
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Galaxy from "@/components/Galaxy";
+import OptionWheel from "@/components/OptionWheel";
+
+const FEATURES = [
+  {
+    tag: "Resume Builder",
+    title: "Resumes that beat the ATS",
+    description:
+      "Craft a logic-driven, ATS-friendly resume with live preview and multiple templates. Auto-saved as you type, deployable in one click.",
+    points: ["ATS-optimized templates", "Live preview while editing", "One-click deployed link"],
+    image:
+      "https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    tag: "AI Interviews",
+    title: "Mock interviews that fight back",
+    description:
+      "Three locked rounds — conceptual, hands-on coding verified against your real Codeforces handle, and a project deep-dive. Difficulty escalates with your answers.",
+    points: ["Adaptive questioning engine", "Codeforces-verified coding round", "3-round locked flow"],
+    image:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    tag: "Job Discovery",
+    title: "Matched to roles that fit",
+    description:
+      "Your resume and interview performance feed a matching engine that surfaces top-tier opportunities — not a firehose of irrelevant listings.",
+    points: ["Skill-based matching", "Recruiter-visible profile", "Top-tier opportunities only"],
+    image:
+      "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop",
+  },
+];
+
+export default function Features() {
+  const [active, setActive] = useState(0);
+  const f = FEATURES[active];
+
   return (
-    <section className="bg-[#0a0a10] py-20 px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-14">
-        <div className="relative shadow-2xl shadow-indigo-500/20 rounded-2xl overflow-hidden shrink-0">
-          <img
-            className="max-w-md w-full object-cover rounded-2xl"
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=451&h=451&auto=format&fit=crop"
-            alt="Professional interview" />
-          <div className="flex items-center gap-1 max-w-72 absolute bottom-6 left-6 bg-gray-900/90 backdrop-blur border border-gray-800 p-4 rounded-xl shadow-lg">
-            <div className="flex -space-x-4 shrink-0">
-              <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200" alt="user"
-                className="size-9 rounded-full border-[3px] border-gray-900 hover:-translate-y-1 transition z-1" />
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200" alt="user"
-                className="size-9 rounded-full border-[3px] border-gray-900 hover:-translate-y-1 transition z-[2]" />
-              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&h=200&auto=format&fit=crop"
-                alt="user"
-                className="size-9 rounded-full border-[3px] border-gray-900 hover:-translate-y-1 transition z-[3]" />
-              <div
-                className="flex items-center justify-center text-xs text-white size-9 rounded-full border-[3px] border-gray-900 bg-indigo-600 hover:-translate-y-1 transition z-[4]">
-                5k+
-              </div>
-            </div>
-            <p className="text-sm font-medium text-gray-200">Join top job seekers today</p>
-          </div>
+    <section className="relative bg-[#0a0a10] py-24 px-6 overflow-hidden">
+      <Galaxy
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-50"
+        transparent
+        density={0.6}
+        speed={0.4}
+        glowIntensity={0.2}
+        twinkleIntensity={0.4}
+        hueShift={140}
+        mouseInteraction={false}
+      />
+
+      <div className="relative z-10 max-w-6xl mx-auto">
+        {/* header */}
+        <div className="text-center mb-16">
+          <span className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-indigo-300 border border-indigo-500/30 bg-indigo-500/10 rounded-full px-4 py-1.5 mb-5">
+            The Toolkit
+          </span>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+            Everything between you and the offer.
+          </h2>
         </div>
 
-        <div className="text-sm text-gray-400 max-w-lg">
-          <h1 className="text-xl uppercase font-semibold text-white">Your Next Big Move</h1>
-          <div className="w-24 h-[3px] rounded-full bg-gradient-to-r from-indigo-600 to-indigo-300 mt-2"></div>
-          <p className="mt-8 leading-relaxed">Next Hire is your all-in-one platform for crafting the perfect logic-driven resume, mastering technical interviews, and discovering top-tier job opportunities.</p>
-          <p className="mt-4 leading-relaxed">Whether you're a fresh graduate stepping into the tech world or a seasoned professional looking to level up, our intelligent job portal helps you stand out to top recruiters and hiring managers.</p>
-          <a href="#" className="flex items-center w-max gap-2 mt-8 hover:-translate-y-0.5 transition bg-gradient-to-r from-indigo-600 to-[#8A7DFF] py-3 px-8 rounded-full text-white shadow-lg shadow-indigo-500/25">
-            <span>Explore Portal</span>
-            <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M12.53 6.53a.75.75 0 0 0 0-1.06L7.757.697a.75.75 0 1 0-1.06 1.06L10.939 6l-4.242 4.243a.75.75 0 0 0 1.06 1.06zM0 6v.75h12v-1.5H0z"
-                fill="#fff" />
-            </svg>
-          </a>
+        <div className="grid lg:grid-cols-[auto_1fr] gap-12 items-center">
+          {/* wheel */}
+          <div className="justify-self-center h-[400px] w-[300px]">
+            <OptionWheel
+              items={FEATURES.map((x) => x.tag)}
+              activeIndex={active}
+              onChange={setActive}
+            />
+          </div>
+
+          {/* feature display */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -24 }}
+              transition={{ duration: 0.3 }}
+              className="grid md:grid-cols-2 gap-10 items-center"
+            >
+              <div>
+                <span className="text-indigo-400 text-sm font-semibold uppercase tracking-wider">
+                  {f.tag}
+                </span>
+                <h3 className="text-3xl md:text-4xl font-bold text-white mt-2 leading-tight">
+                  {f.title}
+                </h3>
+                <p className="mt-5 text-gray-400 leading-relaxed text-base">
+                  {f.description}
+                </p>
+                <ul className="mt-6 space-y-3">
+                  {f.points.map((p) => (
+                    <li key={p} className="flex items-start gap-3 text-gray-300 text-sm">
+                      <svg className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#"
+                  className="inline-flex items-center gap-2 mt-8 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-7 py-3 rounded-full font-semibold transition-all shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
+                >
+                  Explore
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+
+              <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-tr from-indigo-600/20 to-purple-600/10 blur-2xl rounded-3xl pointer-events-none" />
+                <img
+                  src={f.image}
+                  alt={f.tag}
+                  className="relative w-full rounded-2xl border border-gray-800 shadow-2xl shadow-black/50 object-cover aspect-[4/3]"
+                />
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>

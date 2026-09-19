@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 
 const IntAnalysis = ({ file, isPending, data, onStart }) => {
+  const navigate = useNavigate();
   return (
     <div className="relative">
       <div className="absolute -inset-4 bg-gradient-to-tr from-indigo-600/15 to-purple-600/10 blur-2xl rounded-3xl pointer-events-none" />
@@ -46,14 +48,12 @@ const IntAnalysis = ({ file, isPending, data, onStart }) => {
                 </span>
               ))}
             </div>
-            {onStart && (
-              <button
-                onClick={() => onStart(data.skills)}
-                className="w-full mt-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-sm font-semibold py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
-              >
-                Begin Interview →
-              </button>
-            )}
+            <button
+              onClick={() => navigate("/interview/session")}
+              className="w-full mt-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-sm font-semibold py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
+            >
+              Begin Interview →
+            </button>
           </div>
         ) : (
           <div className="space-y-2.5">

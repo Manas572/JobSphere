@@ -28,6 +28,22 @@ export const useAuthStore = create(
   )
 );
 
+
+export const useextskills=create((set)=>({
+  extskills:[],
+  setextskills:(arr)=>set({extskills:arr})
+}))
+
+
+export const useusedq = create((set) => ({
+    used_q: [],
+    addQuestion: (id) =>
+        set((state) => ({
+            used_q: [...state.used_q, id]
+        }))
+}));
+
+
 export const useResumeStore = create((set) => ({
   title: "Untitled",
   accentColor: "#3B82F6",
@@ -58,13 +74,9 @@ export const PROBLEMS = [
 ];
 
 export const useInterviewStore = create((set) => ({
-  round: 1, // 1 | 2 | 3 — sequential lock, only nextRound() advances
-  r1Messages: [
-    { from: 'ai', text: "Round 1 — Conceptual. Explain the difference between a process and a thread, and when you'd prefer one over the other." },
-  ],
-  r3Messages: [
-    { from: 'ai', text: "Round 3 — Project Deep-Dive. Pick the project on your resume you're proudest of and walk me through its architecture." },
-  ],
+  round: 1, 
+  r1Messages: [],
+  r3Messages: [],
   cf: { handle: null, verified: false, problemIndex: 0 }, 
 
   addMessage: (round, msg) =>
@@ -77,4 +89,5 @@ export const useInterviewStore = create((set) => ({
   verifyHandle: (handle) => set({ cf: { handle, verified: true, problemIndex: 0 } }),
   passProblem: () =>
     set((s) => ({ cf: { ...s.cf, problemIndex: s.cf.problemIndex + 1 } })),
+  reset: () => set({ round: 1, r1Messages: [], r3Messages: [], cf: { handle: null, verified: false, problemIndex: 0 } }),
 }));
