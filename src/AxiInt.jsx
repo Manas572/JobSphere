@@ -1,7 +1,12 @@
 import axios from "axios";
+
+const { hostname, protocol } = window.location;
+const backendBaseURL = ["localhost", "127.0.0.1"].includes(hostname)
+  ? `${protocol}//${hostname}:8000/`
+  : `https://${hostname.replace("-5173.", "-8000.")}/`;
+
 const BackendApi = axios.create({
-  baseURL: "http://127.0.0.1:8000/", 
-  //  baseURL: "https://35hzb7z7-8000.inc1.devtunnels.ms/",
+  baseURL: backendBaseURL,
   timeout: 5000,
   withCredentials: true,
 });
