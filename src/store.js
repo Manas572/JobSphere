@@ -1,32 +1,13 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
-export const useAuthStore = create(
-  persist(
-    (set) => ({
-      accessToken: null,
-      refreshToken: null,
-      user: null,
-      setAuth: (accessToken, refreshToken, user) => {
-        set({ accessToken, refreshToken, user });
-      },
+// Remove tokens saved by older versions; auth tokens now live only in HttpOnly cookies.
+if (typeof window !== "undefined") window.localStorage.removeItem("nexthire-storage");
 
-      setTokens: (accessToken, refreshToken) => {
-        set({ accessToken, refreshToken });
-      },
-
-      logout: () =>
-        set({
-          accessToken: null,
-          refreshToken: null,
-          user: null,
-        }),
-    }),
-    {
-      name: "nexthire-storage",
-    }
-  )
-);
+export const useAuthStore = create((set) => ({
+  user: null,
+  setAuth: (user) => set({ user }),
+  logout: () => set({ user: null }),
+}));
 
 
 export const useextskills=create((set)=>({

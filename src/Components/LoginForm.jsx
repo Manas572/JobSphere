@@ -1,33 +1,28 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Wrongs from './Wrongs';
 import { useAuthStore } from '../store';
+import BackendApi from '../AxiInt';
 
 export default function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [err, setError] = useState("");
-    const {setAuth}= useAuthStore();
+    const setAuth = useAuthStore((state) => state.setAuth);
     const navigate=useNavigate();
     async function handlesubmit(e){
         e.preventDefault();
         setError("")
-        console.log(email);
-        console.log(password);
         try{
-            const response= await axios.post("http://127.0.0.1:8000/api/token/",{
+            const response= await BackendApi.post("/api/token/",{
                 email,
                 password
             })
 
-            console.log(response.data)
-            setAuth(response.data.access,response.data.refresh,response.data.user);
+            setAuth(response.data.user);
 
            navigate("/")
         }catch(error){
-            console.log(error.response?.data?.detail);
-            
             setError(error.response?.data?.detail || "Login failed");
         }
     }
