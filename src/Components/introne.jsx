@@ -145,9 +145,9 @@ const RoundOneChat = () => {
 
       <button
         onClick={nextRound}
-        className="fixed bottom-20 right-4 text-[10px] text-gray-700 hover:text-gray-500 border border-gray-800 rounded px-2 py-1"
+        className="fixed bottom-20 right-4 z-20 rounded-xl border border-[#78A4CB]/50 bg-gray-900 px-6 py-3 text-base font-semibold text-[#B4E1EB] shadow-lg hover:bg-[#78A4CB]/15 hover:border-[#78A4CB] transition-colors"
       >
-        dev: skip to round 2
+        Skip to Round 2
       </button>
     </>
   );

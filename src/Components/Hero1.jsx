@@ -1,10 +1,16 @@
-import LightRays from "@/components/LightRays";
+import LightRays from "./LightRays";
 
 export default function Head() {
   return (
     <section className="relative bg-[#0a0a10] overflow-hidden flex items-center min-h-[90vh]">
       <div className="absolute top-0 right-0 w-full lg:w-3/5 h-full pointer-events-none">
-      <LightRays raysOrigin="top-center"raysColor="#ffffff"lightSpread={1.2}rayLength={1.4}className="absolute inset-0 w-full h-full pointer-events-none" />
+      <LightRays
+        raysOrigin="top-center"
+        raysColor="#ffffff"
+        lightSpread={1.2}
+        rayLength={1.4}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+      />
       </div>
       <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-28 grid lg:grid-cols-2 gap-16 items-center">
         <div>

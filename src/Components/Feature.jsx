@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Galaxy from "@/components/Galaxy";
-import OptionWheel from "@/components/OptionWheel";
+import Galaxy from "./Galaxy";
+import OptionWheel from "./OptionWheel";
 
 const FEATURES = [
   {
@@ -66,7 +66,7 @@ export default function Features() {
           <div className="justify-self-center h-[400px] w-[300px]">
             <OptionWheel
               items={FEATURES.map((x) => x.tag)}
-              activeIndex={active}
+              defaultSelected={active}
               onChange={setActive}
             />
           </div>

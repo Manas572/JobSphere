@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useExtractSkills } from '../Queries/ExtractSkills';
 import IntAnalysis from './IntAnalysis';
 import { useextskills } from '../store';
+import { useInterviewStore } from '../store';
 
 const Inthead = ({ onStart }) => {
   const [file, setFile] = useState(null);
   const {extskills,setextskills}=useextskills()
+  const setResumeContext = useInterviewStore((state) => state.setResumeContext);
   const { mutate: extractSkills, isPending, data } = useExtractSkills();
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
@@ -15,6 +17,7 @@ const Inthead = ({ onStart }) => {
     if (file) extractSkills(file, {
       onSuccess: (data) => {
         setextskills(data.skills);
+        setResumeContext({ skills: data.skills || [], projects: data.projects || [] });
         console.log('Skills extracted:', data.skills);
       }
     });

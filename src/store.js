@@ -67,17 +67,12 @@ export const useResumeStore = create((set) => ({
     })),
 }));
 
-export const PROBLEMS = [
-  { n: 1, rating: 1000 },
-  { n: 2, rating: 1400 },
-  { n: 3, rating: 1700 },
-];
-
 export const useInterviewStore = create((set) => ({
   round: 1, 
   r1Messages: [],
   r3Messages: [],
-  cf: { handle: null, verified: false, problemIndex: 0 }, 
+  resumeContext: { skills: [], projects: [] },
+  cf: { handle: null, verified: false, problemIndex: 0, problems: [], challenge: null },
 
   addMessage: (round, msg) =>
     set((s) =>
@@ -85,9 +80,10 @@ export const useInterviewStore = create((set) => ({
         ? { r1Messages: [...s.r1Messages, msg] }
         : { r3Messages: [...s.r3Messages, msg] },
     ),
+  setResumeContext: (resumeContext) => set({ resumeContext }),
   nextRound: () => set((s) => ({ round: Math.min(3, s.round + 1) })),
-  verifyHandle: (handle) => set({ cf: { handle, verified: true, problemIndex: 0 } }),
-  passProblem: () =>
-    set((s) => ({ cf: { ...s.cf, problemIndex: s.cf.problemIndex + 1 } })),
-  reset: () => set({ round: 1, r1Messages: [], r3Messages: [], cf: { handle: null, verified: false, problemIndex: 0 } }),
+  setCFChallenge: (handle, challenge) => set((s) => ({ cf: { ...s.cf, handle, challenge } })),
+  verifyHandle: (handle, problems) => set({ cf: { handle, verified: true, problemIndex: 0, problems: ['1000', '1400', '1700'].map((rating) => problems?.[rating]).filter(Boolean), challenge: null } }),
+  passProblem: () => set((s) => ({ cf: { ...s.cf, problemIndex: s.cf.problemIndex + 1 } })),
+  reset: () => set({ round: 1, r1Messages: [], r3Messages: [], resumeContext: { skills: [], projects: [] }, cf: { handle: null, verified: false, problemIndex: 0, problems: [], challenge: null } }),
 }));

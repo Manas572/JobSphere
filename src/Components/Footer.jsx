@@ -1,4 +1,4 @@
-import Galaxy from "@/components/Galaxy";
+import Galaxy from "./Galaxy";
 
 export default function Footer() {
   const cols = [

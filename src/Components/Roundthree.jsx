@@ -1,32 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { SendHorizonal, Bot } from 'lucide-react';
+import { SendHorizonal, Bot, Loader2 } from 'lucide-react';
 import { useInterviewStore } from '../store';
-const AI_REPLIES = [
-  'Why did you choose that stack over alternatives?',
-  'What was the hardest bug you hit on that project?',
-  'How would you scale it to 10x the users?',
-];
+import BackendApi from '../AxiInt';
 
 const RoundThreeChat = () => {
   const { r3Messages, addMessage } = useInterviewStore();
+  const resumeContext = useInterviewStore((state) => state.resumeContext);
   const [text, setText] = useState('');
-  const [replyIdx, setReplyIdx] = useState(0);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+  const startedRef = useRef(false);
 
-  const send = (e) => {
+  useEffect(() => {
+    if (startedRef.current || r3Messages.length > 0) return;
+    startedRef.current = true;
+    setSending(true);
+    BackendApi.post('/api/round-three', { messages: [], resume_context: resumeContext, start: true }, { timeout: 50000 })
+      .then(({ data }) => addMessage(3, { from: 'ai', text: data.reply }))
+      .catch((err) => setError(err.response?.data?.message || err.response?.data?.detail || 'Could not start the interview. Send a message to try again.'))
+      .finally(() => setSending(false));
+  }, []);
+
+  const send = async (e) => {
     e.preventDefault();
     const t = text.trim();
-    if (!t) return;
+    if (!t || sending) return;
     addMessage(3, { from: 'user', text: t });
     setText('');
-    const idx = replyIdx;
-    setTimeout(() => addMessage(3, { from: 'ai', text: AI_REPLIES[idx % AI_REPLIES.length] }), 900);
-    setReplyIdx(replyIdx + 1);
+    setSending(true);
+    setError('');
+    try {
+      const messages = [...r3Messages, { from: 'user', text: t }].map((message) => ({
+        role: message.from === 'ai' ? 'assistant' : 'user',
+        content: message.text,
+      }));
+      const { data } = await BackendApi.post('/api/round-three', { messages, resume_context: resumeContext }, { timeout: 50000 });
+      addMessage(3, { from: 'ai', text: data.reply });
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data?.detail || (err.code === 'ECONNABORTED'
+        ? 'The interview assistant took too long to respond. Please try again.'
+        : 'Could not reach the interview assistant. Check that the backend is running, then try again.'));
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
     <>
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4">
+        {r3Messages.length === 0 && <p className="text-center text-sm text-gray-500">Round 3 focuses on your project architecture, technology choices, database tradeoffs, caching, Redis latency improvements, and scaling decisions.</p>}
         {r3Messages.map((m, i) => (
           <motion.div
             key={i}
@@ -52,20 +75,24 @@ const RoundThreeChat = () => {
         ))}
       </div>
 
-      <form onSubmit={send} className="sticky bottom-0 border-t border-gray-800/60 bg-[#0a0a10]/90 backdrop-blur p-4 flex gap-2">
+      <form onSubmit={send} className="sticky bottom-0 border-t border-gray-800/60 bg-[#0a0a10]/90 backdrop-blur p-4">
+        {error && <p role="alert" className="mb-2 text-sm text-rose-300">{error}</p>}
+        <div className="flex gap-2">
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Talk through your project…"
+          placeholder="Explain a design decision in your project…"
           className="flex-1 bg-gray-900 border border-gray-800 focus:border-[#78A4CB]/60 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none transition-colors"
         />
         <button
           type="submit"
-          className="size-11 rounded-xl bg-gradient-to-r from-[#78A4CB] to-[#95BDD7] text-[#0a0a10] flex items-center justify-center hover:opacity-90 transition"
+          disabled={!text.trim() || sending}
+          className="size-11 rounded-xl bg-gradient-to-r from-[#78A4CB] to-[#95BDD7] text-[#0a0a10] flex items-center justify-center hover:opacity-90 transition disabled:opacity-50"
           aria-label="Send"
         >
-          <SendHorizonal className="w-4 h-4" />
+          {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <SendHorizonal className="w-4 h-4" />}
         </button>
+        </div>
       </form>
     </>
   );
