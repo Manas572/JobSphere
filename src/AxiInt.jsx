@@ -9,7 +9,7 @@ const backendBaseURL = isLocal
 
 const BackendApi = axios.create({
   baseURL: backendBaseURL,
-  timeout: 3000, 
+  timeout: 30000, 
   withCredentials: true,
 });
 
