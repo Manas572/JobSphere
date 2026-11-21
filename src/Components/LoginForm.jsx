@@ -21,7 +21,7 @@ export default function LoginForm() {
 
             setAuth(response.data.user);
 
-           navigate("/")
+           navigate(response.data.user?.role === 'RECRUITER' ? '/recruiter' : '/')
         }catch(error){
             setError(error.response?.data?.detail || "Login failed");
         }
@@ -37,18 +37,9 @@ export default function LoginForm() {
         
                 <form className="md:w-96 w-80 flex flex-col items-center justify-center"  onSubmit={handlesubmit}>
                     <h2 className="text-4xl text-white font-medium">Sign in</h2>
-                    <p className="text-sm text-gray-400 mt-3 mb-8">Welcome back! Please sign in to continue</p>
-        
-                    
-                    {err && <Wrongs msg={err} />}
-
-                    <button type="button" className="w-full bg-gray-800 hover:bg-gray-700 transition-colors flex items-center justify-center h-12 rounded-full mt-4">
-                        <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg" alt="googleLogo" />
-                    </button>
-        
                     <div className="flex items-center gap-4 w-full my-5">
                         <div className="w-full h-px bg-gray-700"></div>
-                        <p className="w-full text-nowrap text-sm text-gray-400">or sign in with email</p>
+                        <p className="w-full text-nowrap text-sm text-gray-400"> sign in with email</p>
                         <div className="w-full h-px bg-gray-700"></div>
                     </div>
         
@@ -68,14 +59,6 @@ export default function LoginForm() {
                         <input type="password" placeholder="Password" 
                         value={password} onChange={(e) => setPassword(e.target.value)}
                         className="bg-transparent text-gray-200 placeholder-gray-500 outline-none text-sm w-full h-full" required />
-                    </div>
-        
-                    <div className="w-full flex items-center justify-between mt-8 text-gray-400">
-                        <div className="flex items-center gap-2">
-                            <input className="h-5 w-5 accent-indigo-500 bg-gray-800 border-gray-700 rounded" type="checkbox" id="checkbox" />
-                            <label className="text-sm" htmlFor="checkbox">Remember me</label>
-                        </div>
-                        <a className="text-sm underline hover:text-gray-300 transition-colors" href="#">Forgot password?</a>
                     </div>
         
                     <button type="submit" className="mt-8 w-full h-11 rounded-full text-white bg-indigo-600 hover:bg-indigo-500 transition-colors" >

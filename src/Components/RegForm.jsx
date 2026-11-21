@@ -1,8 +1,33 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; 
 import Wrongs from './Wrongs';
+import BackendApi from '../AxiInt';
+import { useAuthStore } from '../store';
 
+function getErrorMessage(error, accountCreated) {
+    const responseData = error.response?.data;
+    const fallback = accountCreated
+        ? 'Account created, but automatic login failed. Please sign in.'
+        : 'Registration failed. Please try again.';
+
+    if (!responseData) return fallback;
+    if (typeof responseData === 'string') return responseData;
+    if (responseData.detail) return responseData.detail;
+
+    const preferredFields = ['password', 'email', 'company_name', 'location', 'non_field_errors'];
+    const field = preferredFields.find((key) => responseData[key] !== undefined)
+        ?? Object.keys(responseData)[0];
+    if (!field) return fallback;
+
+    const messages = Array.isArray(responseData[field]) ? responseData[field] : [responseData[field]];
+    const message = messages
+        .map((item) => typeof item === 'string' ? item : item?.message ?? item?.error)
+        .filter(Boolean)
+        .join(' ');
+
+    if (!message) return fallback;
+    return field === 'non_field_errors' ? message : `${field}: ${message}`;
+}
 
 export default function RegisterForm() {
     const [role, setRole] = useState('CANDIDATE');
@@ -14,19 +39,21 @@ export default function RegisterForm() {
     const [location, setlocation] = useState("");
     const [company_name, setcompany_name] = useState("");
     const [company_website, setcompany_website] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const setAuth = useAuthStore((state) => state.setAuth);
     const navigate = useNavigate();
 
     async function handleSubmit(e) {
         e.preventDefault(); 
         setError("");
+        setIsSubmitting(true);
+        let accountCreated = false;
         try {
             if (role === 'CANDIDATE') {
                 const payload = { email, password };
                 if (portfolio_url) payload.portfolio_url = portfolio_url;
                 if (resume_link) payload.resume_link = resume_link;
-                const response = await axios.post("http://127.0.0.1:8000/createcandiate/", payload);
-                console.log(response);
-                
+                await BackendApi.post("/createcandiate/", payload);
             } else {
                 const payload = {
                     email,
@@ -35,25 +62,18 @@ export default function RegisterForm() {
                     company_name
                 };
                 if (company_website) payload.company_website = company_website;
-                const response = await axios.post("http://127.0.0.1:8000/createrecruiter/", payload);
+                await BackendApi.post("/createrecruiter/", payload);
             }
-            
-            navigate("/login");
+            accountCreated = true;
+
+            const loginResponse = await BackendApi.post("/api/token/", { email, password });
+            setAuth(loginResponse.data.user);
+            navigate(loginResponse.data.user?.role === 'RECRUITER' ? '/recruiter' : '/');
             
         } catch(error) {
-            console.log(error.response?.data);
-            const responseData = error.response?.data;
-            let errorMessage = "Registration failed";
-            if (responseData) {
-                if (responseData.detail) {
-                    errorMessage = responseData.detail;
-                } 
-                else {
-                    const firstKey = Object.keys(responseData)[0];
-                    errorMessage = `${firstKey}: ${responseData[firstKey][0]}`;
-                }
-            } 
-            setError(errorMessage);
+            setError(getErrorMessage(error, accountCreated));
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -88,13 +108,9 @@ export default function RegisterForm() {
                         </button>
                     </div>
 
-                    <button type="button" className="w-full bg-gray-800 hover:bg-gray-700 transition-colors flex items-center justify-center h-12 rounded-full">
-                        <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg" alt="googleLogo" />
-                    </button>
-        
                     <div className="flex items-center gap-4 w-full my-5">
                         <div className="w-full h-px bg-gray-700"></div>
-                        <p className="w-full text-nowrap text-sm text-gray-400">or sign up with email</p>
+                        <p className="w-full text-nowrap text-sm text-gray-400">sign up with email</p>
                         <div className="w-full h-px bg-gray-700"></div>
                     </div>
         
@@ -140,8 +156,8 @@ export default function RegisterForm() {
                         </>
                     )}
         
-                    <button type="submit" className="mt-6 w-full h-11 rounded-full text-white bg-indigo-600 hover:bg-indigo-500 transition-colors" >
-                        Sign Up
+                    <button type="submit" disabled={isSubmitting} className="mt-6 w-full h-11 rounded-full text-white bg-indigo-600 hover:bg-indigo-500 transition-colors disabled:cursor-not-allowed disabled:opacity-60" >
+                        {isSubmitting ? 'Creating account…' : 'Sign Up'}
                     </button>
                     
                     <p className="text-gray-400 text-sm mt-6">Already have an account? <Link to="/login" className="text-indigo-400 hover:text-indigo-300 hover:underline transition-colors" >Sign in </Link></p>

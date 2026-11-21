@@ -14,6 +14,7 @@ import Resume from './Pages/Resume'
 import ResCreate from './Pages/ResCreate'
 import Interview from './Pages/Interview'
 import InterviewPage from './Components/Intpage'
+import RecruiterDashboard from './Rec_pages/RecruiterDashboard'
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
     <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegPage />} />
+        <Route path="/recruiter" element={<RecruiterDashboard />} />
         <Route path="/profile" element={<Myprofile />} />
         <Route path="/" element={<Home />} />
         <Route path="/resume" element={<Resume />} />
