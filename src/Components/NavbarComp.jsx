@@ -34,7 +34,7 @@ const NavbarComp = () => {
             </div>
 
             {/* Desktop CTA */}
-            <button className="group hidden md:inline-flex items-center gap-2 bg-[#CFEAE0] hover:bg-[#CFEAE0]/90 active:scale-[0.98] text-[#131B2B] text-sm font-semibold px-4 py-2 rounded-md transition-all cursor-pointer">
+            <NavLink to="/login" className="group hidden md:inline-flex items-center gap-2 bg-[#CFEAE0] hover:bg-[#CFEAE0]/90 active:scale-[0.98] text-[#131B2B] text-sm font-semibold px-4 py-2 rounded-md transition-all cursor-pointer">
                 Get started
                 <svg
                     width="12"
@@ -52,7 +52,7 @@ const NavbarComp = () => {
                         strokeLinejoin="round"
                     />
                 </svg>
-            </button>
+            </NavLink>
 
             {/* Mobile Hamburger */}
             <button
@@ -84,7 +84,7 @@ const NavbarComp = () => {
                             {item.name}
                         </NavLink>
                     ))}
-                    <button className="group inline-flex items-center justify-center gap-2 bg-[#CFEAE0] hover:bg-[#CFEAE0]/90 active:scale-[0.98] text-[#131B2B] text-sm font-semibold px-4 py-2.5 rounded-md transition-all cursor-pointer mt-3 w-fit">
+                    <NavLink to="/login" onClick={() => setMenuOpen(false)} className="group inline-flex items-center justify-center gap-2 bg-[#CFEAE0] hover:bg-[#CFEAE0]/90 active:scale-[0.98] text-[#131B2B] text-sm font-semibold px-4 py-2.5 rounded-md transition-all cursor-pointer mt-3 w-fit">
                         Get started
                         <svg
                             width="12"
@@ -102,7 +102,7 @@ const NavbarComp = () => {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                    </button>
+                    </NavLink>
                 </div>
             )}
         </nav>
