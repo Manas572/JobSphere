@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/backend/:path*/",
+      "destination": "https://next-hire-backend-oaeq.onrender.com/:path*/"
+    },
+    {
+      "source": "/backend/:path*",
+      "destination": "https://next-hire-backend-oaeq.onrender.com/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
