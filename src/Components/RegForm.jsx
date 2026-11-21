@@ -53,7 +53,7 @@ export default function RegisterForm() {
                 const payload = { email, password };
                 if (portfolio_url) payload.portfolio_url = portfolio_url;
                 if (resume_link) payload.resume_link = resume_link;
-                await BackendApi.post("/createcandiate/", payload);
+                await BackendApi.post("/createcandidate/", payload);
             } else {
                 const payload = {
                     email,
