@@ -6,9 +6,14 @@ import BackendApi from '../AxiInt';
 
 const RoundThreeChat = () => {
   const { r3Messages, addMessage } = useInterviewStore();
+  const r1Messages = useInterviewStore((state) => state.r1Messages);
+  const r1Vector = useInterviewStore((state) => state.r1Vector);
+  const r1Evaluation = useInterviewStore((state) => state.r1Evaluation);
+  const setR1Evaluation = useInterviewStore((state) => state.setR1Evaluation);
   const resumeContext = useInterviewStore((state) => state.resumeContext);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [evaluating, setEvaluating] = useState(false);
   const [error, setError] = useState('');
   const startedRef = useRef(false);
 
@@ -25,7 +30,7 @@ const RoundThreeChat = () => {
   const send = async (e) => {
     e.preventDefault();
     const t = text.trim();
-    if (!t || sending) return;
+    if (!t || sending || evaluating || r1Evaluation) return;
     addMessage(3, { from: 'user', text: t });
     setText('');
     setSending(true);
@@ -43,6 +48,31 @@ const RoundThreeChat = () => {
         : 'Could not reach the interview assistant. Check that the backend is running, then try again.'));
     } finally {
       setSending(false);
+    }
+  };
+
+  const finishInterview = async () => {
+    if (sending || evaluating || r1Evaluation) return;
+    setEvaluating(true);
+    setError('');
+    try {
+      const toTranscript = (messages) => messages.map((message) => ({
+        role: message.from === 'ai' ? 'assistant' : 'user',
+        content: message.text,
+      }));
+      const { data } = await BackendApi.post('/api/evaluate-interview', {
+        r1_messages: toTranscript(r1Messages),
+        r3_messages: toTranscript(r3Messages),
+        r1_vector: r1Vector,
+        resume_context: resumeContext,
+      }, { timeout: 60000 });
+      setR1Evaluation(data.evaluation);
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data?.detail || (err.code === 'ECONNABORTED'
+        ? 'The evaluation took too long. Please try again.'
+        : 'Could not evaluate the interview. Check that the backend and Gemini service are available, then try again.'));
+    } finally {
+      setEvaluating(false);
     }
   };
 
@@ -73,26 +103,83 @@ const RoundThreeChat = () => {
             </div>
           </motion.div>
         ))}
+        {r1Evaluation && (
+          <section className="mx-auto w-full max-w-3xl rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 md:p-6 space-y-5">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-emerald-300">Interview evaluation</p>
+              <h2 className="mt-1 text-xl font-bold text-white">
+                {r1Evaluation.recommendation} · {r1Evaluation.overall_score}/10
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-gray-300">{r1Evaluation.summary}</p>
+            </div>
+            {[['Round 1 · Core concepts', r1Evaluation.round_one], ['Round 3 · Project deep-dive', r1Evaluation.round_three]].map(([title, round]) => (
+              <div key={title} className="border-t border-gray-800 pt-4">
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="font-semibold text-white">{title}</h3>
+                  <span className="text-sm font-semibold text-[#B4E1EB]">{round.score}/10</span>
+                </div>
+                <p className="mt-2 text-sm text-gray-400">{round.summary}</p>
+                <div className="mt-3 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-300">Strengths</p>
+                    <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-300">
+                      {round.strengths.map((item, index) => <li key={`${title}-strength-${index}`}>{item}</li>)}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-amber-300">Areas to improve</p>
+                    <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-300">
+                      {round.areas_to_improve.map((item, index) => <li key={`${title}-improve-${index}`}>{item}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="border-t border-gray-800 pt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-emerald-300">Overall strengths</p>
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-300">
+                  {r1Evaluation.strengths.map((item, index) => <li key={`overall-strength-${index}`}>{item}</li>)}
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-amber-300">Overall areas to improve</p>
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-300">
+                  {r1Evaluation.areas_to_improve.map((item, index) => <li key={`overall-improve-${index}`}>{item}</li>)}
+                </ul>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
 
-      <form onSubmit={send} className="sticky bottom-0 border-t border-gray-800/60 bg-[#0a0a10]/90 backdrop-blur p-4">
+      <form onSubmit={send} className="sticky bottom-0 border-t border-gray-800/60 bg-[#0a0a10]/90 backdrop-blur p-4 space-y-2">
         {error && <p role="alert" className="mb-2 text-sm text-rose-300">{error}</p>}
         <div className="flex gap-2">
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Explain a design decision in your project…"
-          className="flex-1 bg-gray-900 border border-gray-800 focus:border-[#78A4CB]/60 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none transition-colors"
+          disabled={sending || evaluating || Boolean(r1Evaluation)}
+          className="flex-1 bg-gray-900 border border-gray-800 focus:border-[#78A4CB]/60 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none transition-colors disabled:opacity-50"
         />
         <button
           type="submit"
-          disabled={!text.trim() || sending}
+          disabled={!text.trim() || sending || evaluating || Boolean(r1Evaluation)}
           className="size-11 rounded-xl bg-gradient-to-r from-[#78A4CB] to-[#95BDD7] text-[#0a0a10] flex items-center justify-center hover:opacity-90 transition disabled:opacity-50"
           aria-label="Send"
         >
           {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <SendHorizonal className="w-4 h-4" />}
         </button>
         </div>
+        <button
+          type="button"
+          onClick={finishInterview}
+          disabled={sending || evaluating || Boolean(r1Evaluation) || !r3Messages.some((message) => message.from === 'user')}
+          className="w-full rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2.5 text-sm font-semibold text-emerald-200 hover:bg-emerald-500/15 transition-colors disabled:opacity-40"
+        >
+          {evaluating ? <span className="inline-flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Evaluating Round 1 and Round 3…</span> : r1Evaluation ? 'Interview evaluated' : 'Finish interview and get evaluation'}
+        </button>
       </form>
     </>
   );

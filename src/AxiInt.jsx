@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const { hostname, protocol } = window.location;
+const { hostname } = window.location;
 const isLocal = ["localhost", "127.0.0.1"].includes(hostname);
 
 const backendBaseURL = isLocal
-  ? `${protocol}//${hostname}:8000/`
+  ? "/backend/"
   : import.meta.env.VITE_API_URL || "https://next-hire-backend-oaeq.onrender.com/";
 
 const BackendApi = axios.create({
